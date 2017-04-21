@@ -1,11 +1,8 @@
 package strategies.secondTableStrategies.staticStrategies;
 
-import java.util.List;
+import strategies.secondTableStrategies.SecondTableStrategy;
 
-import diceModel.DiceResult;
-import strategies.Strategy;
-
-public abstract class SecondTableStaticStrategy implements Strategy {
+public abstract class SecondTableStaticStrategy extends SecondTableStrategy {
 
 
 }

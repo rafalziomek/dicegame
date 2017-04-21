@@ -11,6 +11,7 @@ import org.junit.Test;
 import diceModel.DiceResult;
 import player.Player;
 import score.PlayerScore;
+import strategies.StrategyType;
 import strategies.firstTableStrategies.FirstTableFiveStrategy;
 import strategies.firstTableStrategies.FirstTableOneStrategy;
 import strategies.firstTableStrategies.FirstTableSixStrategy;
@@ -21,15 +22,12 @@ import strategies.secondTableStrategies.staticStrategies.SecondTableSmallStraigh
 import strategies.secondTableStrategies.sumStrategies.SecondTableThreeSameStrategy;
 
 public class PlayerScoreTest {
-	private Player player1;
-	private Player player2;
-	private PlayerScore playerScore1;
-	private PlayerScore playerScore2;
+	private Player player;
+	private PlayerScore playerScore;
 	private List<DiceResult> result;
 	@Before
 	public void initialize() {
-		player1 = new Player(1);
-		player2 = new Player(2);
+		player = new Player(1);
 	}
 	
 	@Test
@@ -40,7 +38,7 @@ public class PlayerScoreTest {
 	}
 	//Example game of one player with results
 	private void testFirstTableScore() {
-		playerScore1 = new PlayerScore(player1);
+		playerScore = new PlayerScore(player);
 		result = new ArrayList<DiceResult>();
 		result.add(DiceResult.One);
 		result.add(DiceResult.One);
@@ -48,15 +46,9 @@ public class PlayerScoreTest {
 		result.add(DiceResult.Three);
 		result.add(DiceResult.Six);
 		
-		playerScore1.saveScore(new FirstTableOneStrategy(), result);
-		int score = playerScore1.getFirstTableScore();
-		int expectedScore = 3;
-		
-		assertEquals(score, expectedScore);
+		testFirstTableScore(StrategyType.Ones, result, 3);
 		// the same strategy should do not add score
-		playerScore1.saveScore(new FirstTableOneStrategy(), result);
-		score = playerScore1.getScore();
-		assertEquals(score, expectedScore);
+		testFirstTableScore(StrategyType.Ones, result, 3);
 		
 		result = new ArrayList<DiceResult>();
 		result.add(DiceResult.Two);
@@ -65,14 +57,11 @@ public class PlayerScoreTest {
 		result.add(DiceResult.Three);
 		result.add(DiceResult.Six);
 		
-		playerScore1.saveScore(new FirstTableSixStrategy(), result);
-		score = playerScore1.getFirstTableScore();
-		expectedScore = 9;
-		assertEquals(score, expectedScore);
+		testFirstTableScore(StrategyType.Sixes, result, 9);
 	}
 	
 	private void testSecondTableScore() {
-		playerScore2 = new PlayerScore(player2);
+		playerScore = new PlayerScore(player);
 		result = new ArrayList<DiceResult>();
 		result.add(DiceResult.One);
 		result.add(DiceResult.One);
@@ -80,16 +69,9 @@ public class PlayerScoreTest {
 		result.add(DiceResult.One);
 		result.add(DiceResult.One);
 		
-		playerScore2.saveScore(new SecondTableGeneralStrategy(), result);
-		
-		int score = playerScore2.getSecondTableScore();
-		int expectedScore = 50;
-		
-		assertEquals(score, expectedScore);
+		testSecondTableScore(StrategyType.General, result, 50);
 		// the same strategy should do not add score
-		playerScore2.saveScore(new SecondTableGeneralStrategy(), result);
-		score = playerScore2.getScore();
-		assertEquals(score, expectedScore);
+		testSecondTableScore(StrategyType.General, result, 50);
 		
 		result = new ArrayList<DiceResult>();
 		result.add(DiceResult.One);
@@ -98,14 +80,11 @@ public class PlayerScoreTest {
 		result.add(DiceResult.Three);
 		result.add(DiceResult.Six);
 		
-		playerScore2.saveScore(new SecondTableSmallStraightStrategy(), result);
-		score = playerScore2.getSecondTableScore();
-		expectedScore = 80;
-		assertEquals(score, expectedScore);
+		testSecondTableScore(StrategyType.SmallStraight, result, 80);
 	}
 	
 	public void testScore() {
-		playerScore2 = new PlayerScore(player2);
+		playerScore = new PlayerScore(player);
 		result = new ArrayList<DiceResult>();
 		result.add(DiceResult.One);
 		result.add(DiceResult.Two);
@@ -113,16 +92,9 @@ public class PlayerScoreTest {
 		result.add(DiceResult.Five);
 		result.add(DiceResult.Six);
 		
-		playerScore2.saveScore(new SecondTableBigStraightStrategy(), result);
-		
-		int score = playerScore2.getScore();
-		int expectedScore = 40;
-		
-		assertEquals(score, expectedScore);
+		testScore(StrategyType.General, result, 50);
 		//the result do not has three same it should do not add
-		playerScore2.saveScore(new SecondTableThreeSameStrategy(), result);
-		score = playerScore2.getScore();
-		assertEquals(score, expectedScore);
+		testScore(StrategyType.ThreeTheSame, result, 50);
 		
 		result = new ArrayList<DiceResult>();
 		result.add(DiceResult.One);
@@ -131,14 +103,11 @@ public class PlayerScoreTest {
 		result.add(DiceResult.Three);
 		result.add(DiceResult.Six);
 		
-		playerScore2.saveScore(new FirstTableSixStrategy(), result);
-		score = playerScore2.getScore();
-		expectedScore = 46;
-		assertEquals(score, expectedScore);
+		testScore(StrategyType.Sixes, result, 46);
 	}
 	
 	private void testAbove63() {
-		playerScore2 = new PlayerScore(player2);
+		playerScore = new PlayerScore(player);
 		result = new ArrayList<DiceResult>();
 		result.add(DiceResult.Six);
 		result.add(DiceResult.Six);
@@ -146,17 +115,9 @@ public class PlayerScoreTest {
 		result.add(DiceResult.Six);
 		result.add(DiceResult.Six);
 		
-		playerScore2.saveScore(new FirstTableSixStrategy(), result);
+		testScore(StrategyType.Sixes, result, 30);
 		
-		int score = playerScore2.getScore();
-		int expectedScore = 30;
-		
-		assertEquals(score, expectedScore);
-		
-		playerScore2.saveScore(new SecondTableThreeSameStrategy(), result);
-		score = playerScore2.getScore();
-		expectedScore = 60;
-		assertEquals(score, expectedScore);
+		testScore(StrategyType.ThreeTheSame, result, 60);
 		
 		result = new ArrayList<DiceResult>();
 		result.add(DiceResult.Five);
@@ -165,10 +126,7 @@ public class PlayerScoreTest {
 		result.add(DiceResult.Five);
 		result.add(DiceResult.Five);
 		
-		playerScore2.saveScore(new FirstTableFiveStrategy(), result);
-		score = playerScore2.getScore();
-		expectedScore = 85;
-		assertEquals(score, expectedScore);
+		testScore(StrategyType.Fives, result, 85);
 		
 		result = new ArrayList<DiceResult>();
 		result.add(DiceResult.Three);
@@ -177,10 +135,22 @@ public class PlayerScoreTest {
 		result.add(DiceResult.Six);
 		result.add(DiceResult.Three);
 		
-		playerScore2.saveScore(new FirstTableThreeStrategy(), result);
-		score = playerScore2.getScore();
-		expectedScore = 119;
-		assertEquals(score, expectedScore);
+		testScore(StrategyType.Threes, result, 119);
 	}
 	
+	private void testFirstTableScore(StrategyType strategyType, List<DiceResult> result, int expected) {
+		playerScore.saveScore(strategyType, result);
+		int score = playerScore.getFirstTableScore();
+		assertEquals(score, expected);
+	}
+	private void testSecondTableScore(StrategyType strategyType, List<DiceResult> result, int expected) {
+		playerScore.saveScore(strategyType, result);
+		int score = playerScore.getSecondTableScore();
+		assertEquals(score, expected);
+	}
+	private void testScore(StrategyType strategyType, List<DiceResult> result, int expected) {
+		playerScore.saveScore(strategyType, result);
+		int score = playerScore.getScore();
+		assertEquals(score, expected);
+	}
 }

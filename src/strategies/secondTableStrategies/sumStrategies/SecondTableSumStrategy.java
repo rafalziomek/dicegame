@@ -3,9 +3,9 @@ package strategies.secondTableStrategies.sumStrategies;
 import java.util.List;
 
 import diceModel.DiceResult;
-import strategies.Strategy;
+import strategies.secondTableStrategies.SecondTableStrategy;
 
-public abstract class SecondTableSumStrategy implements Strategy {
+public abstract class SecondTableSumStrategy extends SecondTableStrategy {
 	protected boolean condition;
 	public SecondTableSumStrategy(boolean condition) {
 		this.condition = condition;

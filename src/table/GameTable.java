@@ -1,11 +1,14 @@
 package table;
 
 import java.util.Arrays;
+import java.util.List;
 
 import diceModel.DiceContainer;
+import diceModel.DiceResult;
 import player.Player;
 import score.TableScore;
 import strategies.Strategy;
+import strategies.StrategyType;
 
 public class GameTable {
 	private TableScore tableScore;
@@ -21,8 +24,8 @@ public class GameTable {
 		diceContainer = new DiceContainer(5);
 	}
 	
-	public void movePlayer(int playerId, Strategy strategy ) {
-		tableScore.saveScore(playerId, strategy);
+	public void movePlayer(int playerId, StrategyType strategyType, List<DiceResult> result) {
+		tableScore.saveScore(playerId, strategyType, result);
 	}
 
 	private Player getPlayerById(int playerId) {
